@@ -4,3 +4,5 @@
 **/__pycache__
 pyvenv.cfg
 .mypy_cache
+.vscode
+test-db.session.sql
