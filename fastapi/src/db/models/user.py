@@ -1,18 +1,17 @@
-from sqlalchemy import Boolean, Integer, String
-from sqlalchemy.orm import Mapped, relationship, mapped_column
-from .base import Base
+from typing import Optional
+from sqlmodel import Field, Relationship, SQLModel
 
-class User(Base):
-    __tablename__ = "users"
+class User(SQLModel, table=True):
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(String)
-    hashed_password: Mapped[str] = mapped_column(String)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    username: str
+    password: str
+    is_active: bool = True
 
-    team_members: Mapped["list[TeamMembers]"] = relationship("TeamMembers", back_populates="owner")
+    team_members: Optional[list[TeamMembers]] = Relationship(back_populates="owner")
 
     def __repr__(self) -> str:
         return f"<User(id={self.id}, username={self.username}, is_active={self.is_active})>"
 
-from .team import TeamMembers  # Import at the end to avoid circular import
+# Import at the end to avoid circular import
+from .team import TeamMembers  # type: ignore
