@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from ..utils.security import hash_password # type: ignore
-from models import User, Team
-from ..schemas.user import UserCreate # type: ignore
-from ..schemas.teams import TeamMemberCreate # type: ignore
+from utils.security import hash_password # type: ignore
+from db.models import User, Team # type: ignore
+from schemas.user import UserCreate # type: ignore
+from schemas.teams import TeamMemberCreate # type: ignore
 
 # User CRUD Operations
 
@@ -22,7 +22,6 @@ def create_user(db: Session, user: UserCreate):
     """Create a new user."""
     db_user = User(
         username=user.username,
-        email=user.email,
         hashed_password=hash_password(user.password),  # Hash the password before saving
         is_active=user.is_active,
     )
