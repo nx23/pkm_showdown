@@ -27,7 +27,7 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @router.put("/users/{user_id}", response_model=UserOut)
 def update_existing_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
-    db_user = update_user(db, user_id, user)
+    db_user = update_user(db, user_id, user.model_dump())
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user

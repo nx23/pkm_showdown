@@ -1,8 +1,10 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.models.base import Base #type: ignore
 from dotenv import load_dotenv
-import os
+
+from .models.base import Base
 
 load_dotenv()
 

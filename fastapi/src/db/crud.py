@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
+
+from .models import User, TeamMembers
 from utils.security import hash_password # type: ignore
-from db.models import User, Team # type: ignore
 from schemas.user import UserCreate # type: ignore
 from schemas.teams import TeamMemberCreate # type: ignore
 
@@ -51,15 +52,15 @@ def delete_user(db: Session, user_id: int):
 # Team CRUD Operations
 def get_team(db: Session, team_id: int):
     """Get a team by ID."""
-    return db.query(Team).filter(Team.id == team_id).first()
+    return db.query(TeamMembers).filter(TeamMembers.id == team_id).first()
 
 def get_teams(db: Session, skip: int = 0, limit: int = 100):
     """Get a list of teams with pagination."""
-    return db.query(Team).offset(skip).limit(limit).all()
+    return db.query(TeamMembers).offset(skip).limit(limit).all()
 
 def create_team(db: Session, team: TeamMemberCreate):
     """Create a new team."""
-    db_team = Team(
+    db_team = TeamMembers(
         owner_id=team.owner_id,
         member=team.member,
     )
@@ -70,7 +71,7 @@ def create_team(db: Session, team: TeamMemberCreate):
 
 def update_team(db: Session, team_id: int, team_update: dict):
     """Update an existing team."""
-    db_team = db.query(Team).filter(Team.id == team_id).first()
+    db_team = db.query(TeamMembers).filter(TeamMembers.id == team_id).first()
     if db_team:
         for key, value in team_update.items():
             setattr(db_team, key, value)
@@ -80,7 +81,7 @@ def update_team(db: Session, team_id: int, team_update: dict):
 
 def delete_team(db: Session, team_id: int):
     """Delete a team."""
-    db_team = db.query(Team).filter(Team.id == team_id).first()
+    db_team = db.query(TeamMembers).filter(TeamMembers.id == team_id).first()
     if db_team:
         db.delete(db_team)
         db.commit()
