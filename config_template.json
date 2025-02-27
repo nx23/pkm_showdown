@@ -1,0 +1,15 @@
+{
+  "secret_key": "my_secret_key",
+  "host": "0.0.0.0",
+  "port": 8000,
+  "debug": false,
+  "refresh_token": {
+    "expires_in": {
+      "minutes": 0
+    },
+    "algorithm": ""
+  },
+  "database": {
+    "url": ""
+  }
+}
