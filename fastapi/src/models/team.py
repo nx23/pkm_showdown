@@ -11,3 +11,6 @@ class Team(Base):
     member: Mapped[str] = mapped_column(String)
 
     owner: Mapped["User"] = relationship("User", back_populates="teams")
+
+    def __repr__(self) -> str:
+        return f"<Team(id={self.id}, owner_id={self.owner_id}, member={self.member})>"

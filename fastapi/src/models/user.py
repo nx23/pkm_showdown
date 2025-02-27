@@ -12,3 +12,6 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     teams: Mapped[list["Team"]] = relationship("Team", back_populates="owner")
+
+    def __repr__(self) -> str:
+        return f"<User(id={self.id}, username={self.username}, is_active={self.is_active})>"
