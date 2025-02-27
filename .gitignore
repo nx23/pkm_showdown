@@ -1,5 +1,5 @@
 .venv
-config.json
+.env
 **/__pycache__
 pyvenv.cfg
 .mypy_cache
