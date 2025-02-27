@@ -1,0 +1,5 @@
+.venv
+config.json
+**/__pycache__
+pyvenv.cfg
+.mypy_cache
