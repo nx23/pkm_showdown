@@ -1,7 +1,6 @@
 from sqlalchemy import Boolean, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from .base import Base
-from .team import TeamMembers
 
 class User(Base):
     __tablename__ = "users"
@@ -11,7 +10,9 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    team_members: Mapped[list["TeamMembers"]] = relationship("TeamMembers", back_populates="owner")
+    team_members: Mapped["list[TeamMembers]"] = relationship("TeamMembers", back_populates="owner")
 
     def __repr__(self) -> str:
         return f"<User(id={self.id}, username={self.username}, is_active={self.is_active})>"
+
+from .team import TeamMembers  # Import at the end to avoid circular import
