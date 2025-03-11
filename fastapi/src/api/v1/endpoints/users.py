@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -8,9 +8,13 @@ from utils.security import hash_password #type: ignore
 
 router = APIRouter()
 
-@router.post("/users/")
+@router.post("/users/", status_code=status.HTTP_201_CREATED)
 def create_new_user(user: Users, db: Session = Depends(get_session)):
     user.password = hash_password(user.password)
+
+    if db.query(Users).filter(Users.username == user.username).first():
+        raise HTTPException(status_code=400, detail="Username already registered")
+
     db.add(user)
     db.commit()
     db.refresh(user)
