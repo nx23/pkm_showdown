@@ -1,2 +1,7 @@
-from .user import User
-from .team_member import TeamMember
+from .user import Users
+from .team_members import Team_Members
+
+__all__ = [
+    "Users",
+    "Team_Members"
+]

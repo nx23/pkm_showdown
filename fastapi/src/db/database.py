@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlmodel import SQLModel, Session
 
+from .models import Users, Team_Members #type: ignore
+
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -18,4 +20,4 @@ def get_session():
         yield session
 
 # Create all tables
-SQLModel.metadata.create_all(engine)
+SQLModel.metadata.create_all(engine, tables=[Users.metadata.tables["users"], Team_Members.metadata.tables["team_members"]])
