@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.v1.endpoints.users import router as user_router #type: ignore
+from api.v1.endpoints import user_router, login_router #type: ignore
 
 load_dotenv()
 
@@ -29,12 +29,8 @@ app.add_middleware(
 )
 
 # Include the router
-app.include_router(user_router, prefix="/api/v1")
-
-# Root endpoint
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the FastAPI application!"}
+app.include_router(user_router)
+app.include_router(login_router)
 
 if __name__ == "__main__":
     uvicorn.run("run:app", host=HOST, port=int(PORT), reload=True)

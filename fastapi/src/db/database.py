@@ -19,5 +19,7 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-# Create all tables
-SQLModel.metadata.create_all(engine, tables=[Users.metadata.tables["users"], Team_Members.metadata.tables["team_members"]])
+
+if __name__ == "__main__":
+    # Create all tables
+    SQLModel.metadata.create_all(engine, tables=[Users.metadata.tables["users"], Team_Members.metadata.tables["team_members"]])
