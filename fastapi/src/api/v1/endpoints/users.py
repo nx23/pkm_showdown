@@ -32,13 +32,23 @@ def read_user(
 
 
 @router.get("/", response_model=List[Users])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_session)):
+def read_users(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_session),
+    current_user: Users = Depends(get_current_user),
+):
     users = db.query(Users).offset(skip).limit(limit).all()
     return users
 
 
 @router.put("/{user_id}", response_model=Users)
-def update_existing_user(user_id: int, user: Users, db: Session = Depends(get_session)):
+def update_existing_user(
+    user_id: int,
+    user: Users,
+    db: Session = Depends(get_session),
+    current_user: Users = Depends(get_current_user),
+):
     db_user = db.get(Users, user_id)
 
     if db_user is None:
@@ -54,7 +64,11 @@ def update_existing_user(user_id: int, user: Users, db: Session = Depends(get_se
 
 
 @router.delete("/{user_id}", response_model=Users)
-def delete_existing_user(user_id: int, db: Session = Depends(get_session)):
+def delete_existing_user(
+    user_id: int,
+    db: Session = Depends(get_session),
+    current_user: Users = Depends(get_current_user),
+):
     db_user = db.get(Users, user_id)
 
     if db_user is None:
