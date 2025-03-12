@@ -1,11 +1,11 @@
-import uvicorn
 import os
 
+import uvicorn
+from api.v1.endpoints import login_router, user_router
 from dotenv import load_dotenv
-from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.v1.endpoints import user_router, login_router #type: ignore
+from fastapi import FastAPI
 
 load_dotenv()
 
