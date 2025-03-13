@@ -16,7 +16,7 @@ class Team(BaseModel):
 router = APIRouter(prefix="/team")
 
 
-@router.get("/me", response_model=Team, status_code=status.HTTP_200_OK)
+@router.get("/", response_model=Team, status_code=status.HTTP_200_OK)
 def get_my_team(current_user: Users = Depends(get_current_user)) -> Optional[Team]:
     is_user_authenticated(current_user)
 
@@ -29,7 +29,7 @@ def get_my_team(current_user: Users = Depends(get_current_user)) -> Optional[Tea
     return Team(member=team_members)
 
 
-@router.post("/add", response_model=Team, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=Team, status_code=status.HTTP_201_CREATED)
 def add_team_member(
     member: Team_Members,
     db: Session = Depends(get_session),
@@ -44,3 +44,28 @@ def add_team_member(
     db.refresh(member)
 
     return Team(member=[member])
+
+
+@router.delete("/", status_code=status.HTTP_200_OK)
+def remove_team_member(
+    member: Team_Members,
+    db: Session = Depends(get_session),
+    current_user: Users = Depends(get_current_user),
+) -> Optional[Team]:
+    is_user_authenticated(current_user)
+
+    member = db.query(Team_Members).filter(Team_Members.id == member.id).first()
+
+    if not member:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Team member not found"
+        )
+
+    if member.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not allowed to delete this member",
+        )
+
+    db.query(Team_Members).filter(Team_Members.id == member.id).delete()
+    db.commit()
