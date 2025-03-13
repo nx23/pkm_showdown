@@ -3,7 +3,7 @@ from typing import List
 from db.database import get_session
 from db.models import Users
 from sqlalchemy.orm import Session
-from utils.security import get_current_user
+from utils.security import get_current_user, is_user_authenticated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -12,6 +12,8 @@ router = APIRouter(prefix="/users")
 
 @router.get("/me", response_model=Users)
 def read_users_me(current_user: Users = Depends(get_current_user)):
+    is_user_authenticated(current_user)
+
     return current_user
 
 
@@ -21,6 +23,8 @@ def read_user(
     db: Session = Depends(get_session),
     current_user: Users = Depends(get_current_user),
 ):
+    is_user_authenticated(current_user)
+
     db_user = db.get(Users, user_id)
 
     if db_user is None:
@@ -38,6 +42,8 @@ def read_users(
     db: Session = Depends(get_session),
     current_user: Users = Depends(get_current_user),
 ):
+    is_user_authenticated(current_user)
+
     users = db.query(Users).offset(skip).limit(limit).all()
     return users
 
@@ -49,6 +55,8 @@ def update_existing_user(
     db: Session = Depends(get_session),
     current_user: Users = Depends(get_current_user),
 ):
+    is_user_authenticated(current_user)
+
     db_user = db.get(Users, user_id)
 
     if db_user is None:
@@ -69,6 +77,8 @@ def delete_existing_user(
     db: Session = Depends(get_session),
     current_user: Users = Depends(get_current_user),
 ):
+    is_user_authenticated(current_user)
+
     db_user = db.get(Users, user_id)
 
     if db_user is None:

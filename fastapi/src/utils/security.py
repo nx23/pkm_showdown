@@ -83,7 +83,7 @@ def get_current_user(
         if username is None:
             raise credentials_exception
 
-        user = db.query(Users).filter(Users.username == username).first()
+        user = db.query(Users).filter_by(username=username).first()
 
     except JWTError:
         raise credentials_exception
@@ -97,9 +97,16 @@ def authenticate_user(
     if not isinstance(username, str):
         raise ValueError("Username must be a string")
 
-    user = db.query(Users).filter(Users.username == username).first()
+    user = db.query(Users).filter_by(username=username).first()
 
     if not user or not verify_password(password, user.password):
         return None
 
     return user
+
+
+def is_user_authenticated(current_user: Users) -> None:
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not authenticated"
+        )
