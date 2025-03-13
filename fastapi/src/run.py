@@ -1,7 +1,7 @@
 import os
 
 import uvicorn
-from api.v1.endpoints import login_router, user_router
+from api.v1.endpoints import login_router, team_router, user_router
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -31,6 +31,7 @@ app.add_middleware(
 # Include the router
 app.include_router(user_router)
 app.include_router(login_router)
+app.include_router(team_router)
 
 if __name__ == "__main__":
     uvicorn.run("run:app", host=HOST, port=int(PORT), reload=True)
