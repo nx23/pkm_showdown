@@ -16,7 +16,7 @@ class Team(BaseModel):
 router = APIRouter(prefix="/team")
 
 
-@router.get("/me", response_model=Team)
+@router.get("/me", response_model=Team, status_code=status.HTTP_200_OK)
 def get_my_team(current_user: Users = Depends(get_current_user)) -> Optional[Team]:
     is_user_authenticated(current_user)
 
@@ -29,13 +29,15 @@ def get_my_team(current_user: Users = Depends(get_current_user)) -> Optional[Tea
     return Team(member=team_members)
 
 
-@router.post("/add", response_model=Team)
+@router.post("/add", response_model=Team, status_code=status.HTTP_201_CREATED)
 def add_team_member(
     member: Team_Members,
     db: Session = Depends(get_session),
     current_user: Users = Depends(get_current_user),
 ) -> Optional[Team]:
     is_user_authenticated(current_user)
+
+    member.user_id = current_user.id
 
     db.add(member)
     db.commit()
