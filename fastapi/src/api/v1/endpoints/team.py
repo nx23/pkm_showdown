@@ -5,19 +5,22 @@ from db.models import Team_Members, Users
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from utils.security import get_current_user, is_user_authenticated
+from utils.team_builder import validate_member
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
 
 class Team(BaseModel):
-    member: list[Team_Members]
+    members: list[Team_Members]
 
 
 router = APIRouter(prefix="/team")
 
 
 @router.get("/", response_model=Team, status_code=status.HTTP_200_OK)
-def get_my_team(current_user: Users = Depends(get_current_user)) -> Optional[Team]:
+async def get_my_team(
+    current_user: Users = Depends(get_current_user),
+) -> Optional[Team]:
     is_user_authenticated(current_user)
 
     team_members = current_user.team_members
@@ -26,7 +29,10 @@ def get_my_team(current_user: Users = Depends(get_current_user)) -> Optional[Tea
             status_code=status.HTTP_404_NOT_FOUND, detail="No team members found"
         )
 
-    return Team(member=team_members)
+    for member in team_members:
+        await validate_member(member.member_name)
+
+    return Team(members=team_members)
 
 
 @router.post("/", response_model=Team, status_code=status.HTTP_201_CREATED)
@@ -43,7 +49,7 @@ def add_team_member(
     db.commit()
     db.refresh(member)
 
-    return Team(member=[member])
+    return Team(members=[member])
 
 
 @router.delete("/", status_code=status.HTTP_200_OK)
