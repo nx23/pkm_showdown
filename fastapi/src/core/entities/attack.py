@@ -82,51 +82,6 @@ class Attack:
         self._check_for_valid_attack_status(attack_status)
         self.__attack_status = attack_status
 
-    def calculate_damage(self, user: "Mon", target: "Mon"):
-        messages = set()
-        # Check if the attack hits based on accuracy
-        if random.randint(1, 100) > self.accuracy:
-            print(f"{user.name} used {self.name}, but it missed!")
-            return 0
-
-        # Calculate base damage considering attack and defense
-        if self.type.name in [user.main_type, user.sub_type]:
-            modifiers = [1.25]  # STAB (Same-Type Attack Bonus)
-        else:
-            modifiers = []
-
-        # Check weaknesses, resistances, and immunities
-        for target_type in [target.main_type, target.sub_type]:
-            if target_type is None:
-                continue
-            if target_type.is_immune_to(self.type):
-                messages.add(f"{self.name} had no effect on {target.main_type}")
-                return 0
-            elif target_type.is_resistant_to(self.type):
-                messages.add(f"{self.name} was not very effective...")
-                modifiers.append(0.5)
-            elif target_type.is_weak_to(self.type):
-                messages.add(f"{self.name} was super effective!")
-                modifiers.append(2.0)
-
-        if self.attack_status == "atk":
-            base_damage = ceil(user.atk / target.df) * self.power
-        elif self.attack_status == "satk":
-            base_damage = ceil(user.satk / target.sdf) * self.power
-        else:
-            raise ValueError("Invalid attack_status value. Must be 'atk' or 'satk'.")
-
-        damage = int(base_damage * prod(modifiers))
-
-        # Apply damage to the target's HP
-        target.current_hp = max(target.current_hp - damage, 0)
-        print(f"{self.name} dealt {damage} damage to {target.name}!")
-
-        for message in messages:
-            print(message)
-
-        return damage
-
     @classmethod
     def _check_for_valid_name(cls, name):
         if not isinstance(name, str):
