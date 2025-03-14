@@ -3,8 +3,8 @@ from __future__ import annotations
 from math import ceil
 from typing import Optional
 
-from core.entities.attack import Attack
-from core.entities.type import Type
+from core.entities import Attack, Type
+from utils.battle import calculate_damage
 
 
 class Mon:
@@ -186,7 +186,7 @@ class Mon:
         if attack not in self.attacks:
             raise ValueError(f"{self.name} does not know {attack.name}")
 
-        attack.calculate_damage(self, target)
+        calculate_damage(self, target)
 
     def _check_valid_type(self, type_name: str):
         Type._check_for_valid_type(type_name)
