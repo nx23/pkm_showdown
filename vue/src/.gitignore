@@ -1,12 +1,3 @@
-.venv
-.env
-*.sqlite
-**/__pycache__
-pyvenv.cfg
-.mypy_cache
-.vscode
-test-db.session.sql
-
 # Logs
 logs
 *.log
