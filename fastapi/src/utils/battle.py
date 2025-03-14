@@ -1,7 +1,8 @@
 import random
 from math import ceil, prod
 
-from core.entities import Attack, Mon
+from core.entities.attack import Attack
+from core.entities.mon import Mon
 
 
 def calculate_damage(attack_move: Attack, user: Mon, target: Mon):

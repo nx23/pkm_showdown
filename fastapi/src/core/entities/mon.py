@@ -3,8 +3,8 @@ from __future__ import annotations
 from math import ceil
 from typing import Optional
 
-from core.entities import Attack, Type
-from utils.battle import calculate_damage
+from core.entities.attack import Attack
+from core.entities.type import Type
 
 
 class Mon:
@@ -216,3 +216,6 @@ class Mon:
             raise TypeError("Attack must be an instance of the Attack class")
 
         self.__attacks.append(attack)
+
+
+from utils.battle import calculate_damage
