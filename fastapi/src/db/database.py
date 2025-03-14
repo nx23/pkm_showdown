@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlmodel import Session, SQLModel
 
-from .models import Team_Members, Users  # type: ignore
+from .models import Team_Members, Users
 
 load_dotenv()
 

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from core.entities import Mon, Type
 from db.database import get_session
 from db.models import Team_Members, Users
 from pydantic import BaseModel
@@ -29,14 +30,11 @@ async def get_my_team(
             status_code=status.HTTP_404_NOT_FOUND, detail="No team members found"
         )
 
-    for member in team_members:
-        await validate_member(member.member_name)
-
     return Team(members=team_members)
 
 
-@router.post("/", response_model=Team, status_code=status.HTTP_201_CREATED)
-def add_team_member(
+@router.post("/", response_model=Team_Members, status_code=status.HTTP_201_CREATED)
+async def add_team_member(
     member: Team_Members,
     db: Session = Depends(get_session),
     current_user: Users = Depends(get_current_user),
@@ -45,11 +43,40 @@ def add_team_member(
 
     member.user_id = current_user.id
 
-    db.add(member)
-    db.commit()
-    db.refresh(member)
+    if (
+        db.query(Team_Members).filter(Team_Members.user_id == member.user_id).count()
+        >= 6
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You can't have more than 6 members in your team",
+        )
 
-    return Team(members=[member])
+    member_data = await validate_member(member.name)
+
+    pkm = Team_Members(
+        user_id=member.user_id,
+        name=member_data["species"]["name"],
+        species=member_data["species"]["name"],
+        hp=member_data["stats"][0]["base_stat"],
+        atk=member_data["stats"][1]["base_stat"],
+        df=member_data["stats"][2]["base_stat"],
+        satk=member_data["stats"][3]["base_stat"],
+        sdf=member_data["stats"][4]["base_stat"],
+        spd=member_data["stats"][5]["base_stat"],
+        type1=member_data["types"][0]["type"]["name"],
+        type2=(
+            member_data["types"][1]["type"]["name"]
+            if len(member_data["types"]) > 1
+            else None
+        ),
+    )
+
+    db.add(pkm)
+    db.commit()
+    db.refresh(pkm)
+
+    return pkm
 
 
 @router.delete("/", status_code=status.HTTP_200_OK)

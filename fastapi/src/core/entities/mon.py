@@ -29,10 +29,7 @@ class Mon:
         self.__name = name or species
         self.__species = species
         self.__stats = {}
-        self._check_valid_type(main_type.name)
         self.__main_type = main_type
-        if sub_type is not None:
-            self._check_valid_type(sub_type.name)
         self.__sub_type = sub_type
         self.__attacks = []
 
@@ -188,8 +185,8 @@ class Mon:
 
         calculate_damage(self, target)
 
-    def _check_valid_type(self, type_name: str):
-        Type._check_for_valid_type(type_name)
+    async def _check_valid_type(self, type_name: str):
+        await Type._check_for_valid_type(type_name)
 
     def _check_for_valid_stat(self, stat: int, name: str):
         if not isinstance(stat, int):
